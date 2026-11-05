@@ -22,7 +22,7 @@ fun PetCareNavHost(navController: NavHostController = rememberNavController()) {
             route = Routes.PET_DETAIL,
             arguments = listOf(navArgument("petId") { type = NavType.StringType })
         ) {
-            Text("Pet detail - Tony")
+            PetDetailRoute(onBack = { navController.popBackStack() })
         }
     }
     }
