@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.petcare.ui.pets.AddPetRoute
+import com.example.petcare.ui.pets.PetsRoute
 object Routes {
     const val PETS = "pets"
     const val ADD_PET = "add_pet"
@@ -16,8 +18,15 @@ object Routes {
 @Composable
 fun PetCareNavHost(navController: NavHostController = rememberNavController()) {
     NavHost(navController = navController, startDestination = Routes.PETS) {
-        composable(Routes.PETS) { Text("Pets list - Yasser") }
-        composable(Routes.ADD_PET) { Text("Add pet - Yasser") }
+        composable(Routes.PETS) {
+            PetsRoute(
+                onAddPet = { navController.navigate(Routes.ADD_PET) },
+                onOpenPet = { petId -> navController.navigate(Routes.petDetail(petId)) }
+            )
+        }
+        composable(Routes.ADD_PET) {
+            AddPetRoute(onDone = { navController.popBackStack() })
+        }
         composable(
             route = Routes.PET_DETAIL,
             arguments = listOf(navArgument("petId") { type = NavType.StringType })
