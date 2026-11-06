@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.petcare.ui.pets.AddPetRoute
 import com.example.petcare.ui.pets.PetsRoute
+import com.example.petcare.ui.petdetail.PetDetailRoute
 object Routes {
     const val PETS = "pets"
     const val ADD_PET = "add_pet"
