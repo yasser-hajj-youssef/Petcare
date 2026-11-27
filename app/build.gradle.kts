@@ -36,6 +36,10 @@ android {
     }
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
@@ -63,5 +67,15 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    // Background work
+    implementation(libs.androidx.work.runtime.ktx)
+
+// Network and JSON conversion
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+
+// User settings
+    implementation(libs.androidx.datastore.preferences)
 
 }
