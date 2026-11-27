@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.example.petcare.ui.pets.AddPetRoute
 import com.example.petcare.ui.pets.PetsRoute
 import com.example.petcare.ui.petdetail.PetDetailRoute
+import androidx.navigation.navDeepLink
 object Routes {
     const val PETS = "pets"
     const val ADD_PET = "add_pet"
@@ -30,9 +31,22 @@ fun PetCareNavHost(navController: NavHostController = rememberNavController()) {
         }
         composable(
             route = Routes.PET_DETAIL,
-            arguments = listOf(navArgument("petId") { type = NavType.StringType })
+
+            arguments = listOf(
+                navArgument("petId") {
+                    type = NavType.StringType
+                }
+            ),
+
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "petcare://pet/{petId}"
+                }
+            )
         ) {
-            PetDetailRoute(onBack = { navController.popBackStack() })
+            PetDetailRoute(
+                onBack = { navController.popBackStack() }
+            )
         }
     }
     }
