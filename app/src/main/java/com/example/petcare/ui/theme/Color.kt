@@ -2,10 +2,21 @@ package com.example.petcare.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Light mode
+val Coral = Color(0xFFFF6B4A)
+val OnCoral = Color(0xFF2A1208)
+val Teal = Color(0xFF14B8A6)
+val Sunny = Color(0xFFFFB703)
+val Cream = Color(0xFFFFF8F1)
+val Ink = Color(0xFF1F2430)
+val AlertRed = Color(0xFFD32F2F)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Dark mode
+val CoralLight = Color(0xFFFF8A6E)
+val OnCoralLight = Color(0xFF3A1206)
+val TealLight = Color(0xFF2DD4BF)
+val SunnyLight = Color(0xFFFFC94D)
+val Navy = Color(0xFF121826)
+val NavySurface = Color(0xFF1B2333)
+val Mist = Color(0xFFE6E9F0)
+val AlertRedLight = Color(0xFFFF8A80)
