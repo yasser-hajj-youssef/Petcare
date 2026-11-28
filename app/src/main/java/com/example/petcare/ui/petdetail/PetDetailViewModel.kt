@@ -10,6 +10,7 @@ import com.example.petcare.PetCareApplication
 import com.example.petcare.data.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+
 sealed interface PetDetailUiState {
     data object Loading : PetDetailUiState
     data object NotFound : PetDetailUiState
@@ -17,13 +18,15 @@ sealed interface PetDetailUiState {
         val petName: String,
         val species: String,
         val tasks: List<CareTaskUi>,
-        val history: List<CareLogUi>
+        val history: List<CareLogUi>,
+        val pet: PetEntity
     ) : PetDetailUiState
 }
 class PetDetailViewModel(
     savedStateHandle: SavedStateHandle,
-    petRepository: PetRepository,
-    private val careRepository: CareRepository
+    private val petRepository: PetRepository,
+    private val careRepository: CareRepository,
+    private val breedRepository: BreedRepository
 ) : ViewModel() {
     private val petId: String = checkNotNull(savedStateHandle["petId"])
     val uiState: StateFlow<PetDetailUiState> = combine(
@@ -39,7 +42,8 @@ class PetDetailViewModel(
                 petName = pet.name,
                 species = pet.species,
                 tasks = tasks.map { it.toUi(now) },
-                history = logs.map { it.toUi() }
+                history = logs.map { it.toUi() },
+                pet = pet
             )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PetDetailUiState.Loading)
@@ -52,6 +56,68 @@ class PetDetailViewModel(
     fun setReminder(task: CareTaskEntity, time: String?) {
         viewModelScope.launch { careRepository.setReminder(task.id, time) }
     }
+
+    fun observeBreed(id: String): Flow<BreedEntity?> {
+
+        return breedRepository.observeBreed(id)
+    }
+
+    fun saveNotes(notes: String) {
+
+        viewModelScope.launch {
+
+            petRepository.updateNotes(
+                petId = petId,
+                notes = notes
+            )
+        }
+    }
+
+    private val _isDeleted = MutableStateFlow(false)
+
+    val isDeleted = _isDeleted.asStateFlow()
+
+
+    private val _isDeleting = MutableStateFlow(false)
+
+    val isDeleting = _isDeleting.asStateFlow()
+
+
+    private val _deleteError = MutableStateFlow<String?>(null)
+
+    val deleteError = _deleteError.asStateFlow()
+
+
+    fun deletePet(pet: PetEntity) {
+
+        if (_isDeleting.value) return
+
+        _isDeleting.value = true
+
+        _deleteError.value = null
+
+        viewModelScope.launch {
+
+            try {
+
+                petRepository.deletePet(pet)
+
+                _isDeleted.value = true
+
+            } catch (e: kotlinx.coroutines.CancellationException) {
+
+                throw e
+
+            } catch (e: Exception) {
+
+                _deleteError.value = "Unable to delete pet."
+
+            } finally {
+
+                _isDeleting.value = false
+            }
+        }
+    }
     companion object {
         val Factory = viewModelFactory {
             initializer {
@@ -59,7 +125,8 @@ class PetDetailViewModel(
                 PetDetailViewModel(
                     createSavedStateHandle(),
                     app.container.petRepository,
-                    app.container.careRepository
+                    app.container.careRepository,
+                    app.container.breedRepository
                 )
             }
         }

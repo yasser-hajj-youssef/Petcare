@@ -1,9 +1,18 @@
+import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
 }
+val localProps = Properties().apply {
+    val file = rootProject.file("local.properties")
 
+    if (file.exists()) {
+        file.inputStream().use {
+            load(it)
+        }
+    }
+}
 android {
     namespace = "com.example.petcare"
     compileSdk {
@@ -18,6 +27,18 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "DOG_API_KEY",
+            "\"${localProps.getProperty("DOG_API_KEY", "")}\""
+        )
+
+        buildConfigField(
+            "String",
+            "CAT_API_KEY",
+            "\"${localProps.getProperty("CAT_API_KEY", "")}\""
+        )
     }
 
     buildTypes {
@@ -33,6 +54,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -44,6 +66,7 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
